@@ -4,6 +4,8 @@ using Test
 @testset "SquidGame.jl" begin
     @test allunique(SquidGame.AVAILABLE_GAMES)
     @test allunique(SquidGame.AVAILABLE_STRATEGIES)
+
+    # Plays all AVAILABLE_STRATEGIES against each other in all AVAILABLE_GAMES. 
     @testset "Game: $game_name" for game_name in SquidGame.AVAILABLE_GAMES
         @testset "Number of rounds: $num_rounds" for num_rounds in [1; 10]
             game = game_name(num_rounds)
