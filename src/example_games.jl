@@ -5,7 +5,8 @@ function prisoner(num_rounds)
     return Game(; rewards=(iter) -> [[5. 0]; [10 2]], num_rounds)
 end
 
-
+# Random reward game
+export randgame
 function randgame(num_rounds)
     return Game(; rewards=(iter) -> rand(3, 3, 3), num_rounds)
 end

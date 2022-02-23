@@ -85,7 +85,7 @@ module SquidGame
     Assumes indexes are symmetric (action `i` of player `s` is the same as action `i` of player `k` ∀i,s,k).
     """
     function find_cooperative_action(reward)
-        return last(findmax(reward[multi_dim_diag(reward)]))
+        return last(findmax(reward[_multi_dim_diag(reward)]))
     end
 
     """
@@ -136,8 +136,9 @@ module SquidGame
     end
 
     include("example_games.jl")
+
+
+    function _multi_dim_diag(A::AbstractArray{T,N} where T) where N
+        return CartesianIndex.(fill(1:minimum(size(A)), N)...)
+    end
 end
-
-
-
-multi_dim_diag(A::AbstractArray{T,N} where T) where N = CartesianIndex.(fill(1:minimum(size(A)), N)...)
