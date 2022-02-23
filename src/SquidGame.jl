@@ -13,30 +13,30 @@ module SquidGame
     AVAILABLE_GAMES = []
 
     """
-        _run_strategy(strategy::Type{<:Strategy}, reward::AbstractArray{Float64}, 
+        _run_strategy(strategy::Type{<:Strategy}, reward::AbstractArray{Float64},
     history::Union{NamedTuple{(:my_action, :their_action, :my_reward, :their_reward), Tuple{Vector{Int64}, Matrix{Int64}, Vector{Float64}, Matrix{Float64}}}, Missing},
     rounds_left::Union{Int,  Missing}
     ) -> Int
 
     Returns the chosen action index for the specified strategy based on the next round `reward` and the `history` of actions and rewards for previous rounds.
-        
+
     Arguments:
      - `strategy::Type{<:Strategy}`: Strategy name (as DataType);
-     - `reward::AbstractArray{Float64}`: Multimentional Array where the first index is the strategy player's action and the remaining indexes are their rivals;
-     - `history::Union{NamedTuple,  Missing}`: (If not first round) History of strategy player's actions (`my_action`) and rivals' actions (`their_action`), and realized rewards for previous rounds 
+     - `reward::AbstractArray{Float64}`: Multidimensional Array where the first index is the strategy player's action and the remaining indexes are their rivals;
+     - `history::Union{NamedTuple,  Missing}`: (If not first round) History of strategy player's actions (`my_action`) and rivals' actions (`their_action`), and realized rewards for previous rounds
      (`my_reward::Array{Float64,1}`, `their_reward::Array{Float64,2}` - one column per rival);
-     - `rounds_left::Union{Int,  Missing}`: (If game discloses this information) Number of rounds left. 
+     - `rounds_left::Union{Int,  Missing}`: (If game discloses this information) Number of rounds left.
     """
-    function _run_strategy(strategy::Type{<:Strategy}, reward::AbstractArray{Float64}, 
+    function _run_strategy(strategy::Type{<:Strategy}, reward::AbstractArray{Float64},
         history::Union{NamedTuple{(:my_action, :their_action, :my_reward, :their_reward), Tuple{Vector{Int64}, Matrix{Int64}, Vector{Float64}, Matrix{Float64}}}, Missing},
         rounds_left::Union{Int,  Missing}
-    ) 
+    )
         @error "No Logic defined for this strategy"
     end
 
     """
         Game
-    
+
     Basic `num_players` game played `num_rounds` rounds where each player knows the `reward` of each round. If `show_rounds_left` is set, game will disclose how many rounds are left each round.
     """
     struct Game
@@ -48,7 +48,7 @@ module SquidGame
 
     """
         Game(; rewards, num_rounds, num_players=length(size(rewards(1))), show_rounds_left=true)
-    
+
     Constructs a game of type `Game`.
     Warning: Developers are not sure the infrastructure will work if the following assumption does not hold:
      - Indexes are symmetric (action `i` of player `s` is the same as action `i` of player `k` ∀i,s,k).
@@ -75,18 +75,17 @@ module SquidGame
     """
     function find_greedy_action(reward)
         num_players = length(size(reward))
-        return findmax(sum(reward, dims=2:num_players)[:, ones(Int, num_players-1)...])[2]
+        return last(findmax(reduce(vcat, sum(reward, dims=2:num_players))))
     end
 
     """
         find_cooperative_action(reward)
 
-    Returns the action with best expected reward if all players act in the same way. 
+    Returns the action with best expected reward if all players act in the same way.
     Assumes indexes are symmetric (action `i` of player `s` is the same as action `i` of player `k` ∀i,s,k).
     """
     function find_cooperative_action(reward)
-        num_players = length(size(reward))
-        return findmax(x -> reward[fill(x, num_players)...], collect(1:num_players))[2]
+        return last(findmax(reward[multi_dim_diag(reward)]))
     end
 
     """
@@ -108,17 +107,17 @@ module SquidGame
                 if iter == 1
                     history_for_strategy_s = missing
                 else
-                    history_for_strategy_s = (; my_action = strategies_action_history[1:iter-1, s], 
+                    history_for_strategy_s = (; my_action = strategies_action_history[1:iter-1, s],
                         their_action = strategies_action_history[1:iter-1, 1:end .!= s], my_reward = realized_reward_history[1:iter-1, s], their_reward=realized_reward_history[1:iter-1, 1:end .!= s]
                     )
                 end
-                action_s = _run_strategy(strategy, reward, 
+                action_s = _run_strategy(strategy, reward,
                     history_for_strategy_s,
                     game.show_rounds_left ? game.num_rounds - iter + 1 : missing
                 )
-                
+
                 if action_s > size(reward, 1) || action_s < 1
-                    @error "Strategy $strategy is trying to cheating"
+                    @error "Strategy $strategy is trying to cheat"
                 end
                 strategies_action_history[iter, s] = action_s
             end
@@ -138,3 +137,7 @@ module SquidGame
 
     include("example_games.jl")
 end
+
+
+
+multi_dim_diag(A::AbstractArray{T,N} where T) where N = CartesianIndex.(fill(1:minimum(size(A)), N)...)
