@@ -3,9 +3,12 @@ module SquidGame
     using ProgressMeter
     using LinearAlgebra
     using Statistics
+    using RecipesBase
 
     export Strategy, Game, play_game
     export find_greedy_action, find_cooperative_action
+
+    export scoreboard
 
     abstract type Strategy end
 
@@ -136,6 +139,7 @@ module SquidGame
     end
 
     include("example_games.jl")
+    include("plot.jl")
 
 
     function _multi_dim_diag(A::AbstractArray{T,N} where T) where N

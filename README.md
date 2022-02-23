@@ -20,6 +20,7 @@ In this case:
 ```julia
 using SquidGame
 import SquidGame._run_strategy
+using Plots
 
 number_of_rounds = 10
 
@@ -27,7 +28,6 @@ number_of_rounds = 10
 # (The infrastructure is generic enough so you can have different rewards per iteration).
 prisoner_game = prisoner(number_of_rounds) # same as `Game(; rewards=(iter) -> [[5. 0]; [10 2]], number_of_rounds)`
 
-strategies = Vector{Type{<:Strategy}}()
 
 # Define a name for your strategy
 abstract type MyStrategy <: Strategy end
@@ -42,6 +42,8 @@ function SquidGame._run_strategy(::Type{MyStrategy}, reward::AbstractArray{Float
     return find_cooperative_action(reward)
 end
 
+strategies = Vector{Type{<:Strategy}}()
+
 # push it to the stage
 push!(strategies, MyStrategy)
 
@@ -51,8 +53,14 @@ push!(strategies, Devil)
 # Simulate the game.
 realized_reward_history, strategies_action_history = play_game(prisoner_game, strategies)
 
+# Visualise the scores over all rounds 
+scoreboard(realized_reward_history, strategies)
+```
+![](docs/src/assets/prisoner_game_plot.png)
+
 # Play a game with 3 players
 
+```julia 
 # add a player 
 push!(strategies, RandomStrategy)
 
