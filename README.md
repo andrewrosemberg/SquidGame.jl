@@ -72,7 +72,7 @@ realized_reward_history, strategies_action_history = play_game(prisoner_game, st
 # Visualise the scores over all rounds 
 scoreboard(realized_reward_history, strategies)
 ```
-![](docs/src/assets/prisoner_game_plot.png)
+![](https://raw.githubusercontent.com/andrewrosemberg/SquidGame.jl/main/docs/src/assets/prisoner_game_plot.png)
 
 ## Play a game with 3 players
 
