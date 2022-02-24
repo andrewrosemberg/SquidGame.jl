@@ -8,6 +8,7 @@
 
     xguide --> "Strategy"
     yguide --> "round"
+    label --> "score"
     seriestype --> :heatmap
     seriescolor --> :RdYlGn_10
 
