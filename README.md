@@ -5,7 +5,7 @@ Using function `play_game`, simulates a game for of `N` strategies competing aga
 
 Implementable games are "deterministic" games where each player knows the possible rewards for each round at decision time, with the only uncertainty being the action of other players.
 
-Rewards are defined as a multi-dimentional array where entries your action is the first index and rivals are the remaining indexes. For example, a 2 player game:
+Rewards are defined as a multi-dimensional array where entries your action is the first index and rivals are the remaining indexes. For example, a 2 player game:
 
 |               | Rival Action 1| Rival Action 2|
 | ------------- | ------------- | ------------- |
@@ -13,12 +13,14 @@ Rewards are defined as a multi-dimentional array where entries your action is th
 | Your Action 2 |      10.0     |      2.0      |
 
 In this case:
- - If you acted with action `1` and your rival also acted if `1`, both would have earned `5.0` point; 
+ - If you acted with action `1` and your rival also chose action `1`, you would both earn `5` points;
+ - If you acted with action `1` and your rival chose action `2`, you would earn `0` and they would earn `10`. 
 
 ## Example Prisoner Game
 ```julia
 using SquidGame
 import SquidGame._run_strategy
+using Plots
 
 number_of_rounds = 10
 
@@ -26,27 +28,44 @@ number_of_rounds = 10
 # (The infrastructure is generic enough so you can have different rewards per iteration).
 prisoner_game = prisoner(number_of_rounds) # same as `Game(; rewards=(iter) -> [[5. 0]; [10 2]], number_of_rounds)`
 
-strategies = Vector{Type{<:Strategy}}()
 
-# Define your strategy name
+# Define a name for your strategy
 abstract type MyStrategy <: Strategy end
 
-# Define it's logic
+# Define the logic of your strategy
 function SquidGame._run_strategy(::Type{MyStrategy}, reward::AbstractArray{Float64}, 
     history::Union{NamedTuple{(:my_action, :their_action, :my_reward, :their_reward), Tuple{Vector{Int64}, Matrix{Int64}, Vector{Float64}, Matrix{Float64}}}, Missing},
     rounds_left::Union{Int,  Missing}
 )
     
-    # your can use whatever logic you wish but this example is an angel so it will try to always cooperate
+    # your can use whatever logic you wish. This example is an angel, it will always choose the cooperative action.
     return find_cooperative_action(reward)
 end
+
+strategies = Vector{Type{<:Strategy}}()
 
 # push it to the stage
 push!(strategies, MyStrategy)
 
-# Push your oponent 
+# Push your opponent 
 push!(strategies, Devil)
 
-# Simulate the batle
+# Simulate the game.
 realized_reward_history, strategies_action_history = play_game(prisoner_game, strategies)
+
+# Visualise the scores over all rounds 
+scoreboard(realized_reward_history, strategies)
+```
+![](docs/src/assets/prisoner_game_plot.png)
+
+# Play a game with 3 players
+
+```julia 
+# add a player 
+push!(strategies, RandomStrategy)
+
+# choose the game
+random_game = randgame(number_of_rounds)
+
+realized_reward_history, strategies_action_history = play_game(random_game, strategies)
 ```
