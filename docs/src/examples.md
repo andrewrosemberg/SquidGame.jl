@@ -2,7 +2,8 @@
 # Examples
 
 ## Example Prisoner Game
-```julia
+
+```@example Prisoner
 using SquidGame
 import SquidGame._run_strategy
 using Plots
@@ -45,7 +46,7 @@ scoreboard(realized_reward_history, strategies)
 
 ## Play a game with 3 players
 
-```julia 
+```@example PlotScore
 # add a player 
 push!(strategies, RandomStrategy)
 
