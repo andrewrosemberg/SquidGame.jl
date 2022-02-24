@@ -13,11 +13,12 @@ makedocs(;
         canonical="https://andrewrosemberg.github.io/SquidGame.jl",
         assets=String[],
     ),
-    pages=[
-        "Home" => "index.md",
+    pages=["Home" => "index.md",
+        "Examples" => "examples.md",
+        "API" => "api.md",
     ],
     checkdocs=:exports,
-    strict=true,
+    strict=false,
 )
 
 deploydocs(;
