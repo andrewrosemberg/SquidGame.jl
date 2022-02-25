@@ -9,7 +9,7 @@
 
 Strategy simulation for simple games.
 
-## Instalation
+## Installation
 
 ```julia
 ] add SquidGame
@@ -21,7 +21,7 @@ Using function `play_game`, simulates a game for of `N` strategies competing aga
 
 Implementable games are "deterministic" games where each player knows the possible rewards for each round at decision time, with the only uncertainty being the action of other players.
 
-Rewards are defined as a multi-dimensional array where entries your action is the first index and rivals are the remaining indexes. For example, a 2 player game:
+Rewards are defined as a multi-dimensional array where your action is the first index and rivals are the remaining indexes. For example, a 2 player game:
 
 |               | Rival Action 1| Rival Action 2|
 | ------------- | ------------- | ------------- |
