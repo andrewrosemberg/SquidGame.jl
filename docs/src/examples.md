@@ -36,7 +36,7 @@ push!(strategies, MyStrategy)
 # Push your opponent 
 push!(strategies, Devil)
 
-# Simulate the game.
+# Simulate the game
 realized_reward_history, strategies_action_history = play_game(prisoner_game, strategies)
 
 # Visualise the scores over all rounds 
@@ -84,5 +84,9 @@ push!(strategies, RandomStrategy)
 # choose the game
 random_game = randgame(number_of_rounds)
 
+# Simulate the game
 realized_reward_history, strategies_action_history = play_game(random_game, strategies)
+
+# Visualise the scores over all rounds 
+scoreboard(realized_reward_history, strategies)
 ```

@@ -14,7 +14,7 @@
 
     ystrings = reverse(string.(rounds))
 
-    xlabels = (1:size(scores, 2), strategies)
+    xlabels = (1:size(scores, 2), last.(split.(string.(strategies), ".")))
     ylabels = (rounds, ystrings)
 
     xticks := xlabels
