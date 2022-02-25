@@ -85,3 +85,4 @@ random_game = randgame(number_of_rounds)
 
 realized_reward_history, strategies_action_history = play_game(random_game, strategies)
 ```
+![](https://raw.githubusercontent.com/andrewrosemberg/SquidGame.jl/main/docs/src/assets/random_game_plot.png)
