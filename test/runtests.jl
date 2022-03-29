@@ -10,7 +10,7 @@ using Test
         @testset "Number of rounds: $num_rounds" for num_rounds in [1; 10]
             game = game_name(num_rounds)
             num_players = length(size(game.rewards(1)))
-            @testset "Battle: $strategies_pool" for strategies_pool in collect(Iterators.product(fill(SquidGame.AVAILABLE_STRATEGIES, num_players)...))
+            @testset "Battle: $strategies_pool" for strategies_pool in Iterators.product(fill(SquidGame.AVAILABLE_STRATEGIES, num_players)...)
                 strategies = Vector{Type{<:Strategy}}()
                 for strategy in strategies_pool
                     push!(strategies, strategy)
